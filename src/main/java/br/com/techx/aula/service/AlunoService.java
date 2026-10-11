@@ -1,5 +1,5 @@
 package br.com.techx.aula.service;
- 
+import java.util.Optional;
 import br.com.techx.aula.dto.AlunoRequest;
 import br.com.techx.aula.dto.AlunoResponse;
 import br.com.techx.aula.model.Aluno;
@@ -26,12 +26,15 @@ public class AlunoService {
         alunoRepository.save(entity);
     }
  
-    public AlunoResponse findBy(Long id){
-        Aluno aluno = alunoRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("ID NOT FOUND"));
+   public AlunoResponse findBy(Long id) {
+    Optional<Aluno> opt = alunoRepository.findById(id);
+    if (opt.isPresent()) {
+        Aluno aluno = opt.get();
         return new AlunoResponse(aluno.getId(), aluno.getNome(), aluno.getIdade(), aluno.getRa());
+    } else {
+        return null;
     }
+}
  
     public AlunoResponse findByRa(String ra){
         Aluno aluno = alunoRepository
