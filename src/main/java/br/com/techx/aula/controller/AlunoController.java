@@ -1,5 +1,5 @@
 package br.com.techx.aula.controller;
- 
+import org.springframework.http.ResponseEntity;
 import br.com.techx.aula.dto.AlunoRequest;
 import br.com.techx.aula.dto.AlunoResponse;
 import br.com.techx.aula.model.Aluno;
@@ -23,9 +23,14 @@ public class AlunoController {
  
     // @PathVariable -> pega o {id} direto da URL, ex: /aluno/1
     @GetMapping("/{id}")
-    public AlunoResponse getById(@PathVariable Long id){
-        return alunoService.findBy(id);
+public ResponseEntity<AlunoResponse> getById(@PathVariable Long id) {
+    AlunoResponse response = alunoService.findBy(id);
+    if (response != null) {
+        return ResponseEntity.ok(response);
+    } else {
+        return ResponseEntity.notFound().build();
     }
+}
  
     // @RequestParam -> pega o valor da query string, ex: /aluno/buscar?ra=022116
     @GetMapping("/buscar")
