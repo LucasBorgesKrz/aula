@@ -20,11 +20,16 @@ public class AlunoService {
         return alunoRepository.findAll();
     }
  
-    public void create(AlunoRequest alunoRequest) {
-        Aluno entity = new Aluno();
-        BeanUtils.copyProperties(alunoRequest, entity);
-        alunoRepository.save(entity);
-    }
+    public AlunoResponse create(AlunoRequest alunoRequest) {
+    Aluno entity = new Aluno();
+    entity.setNome(alunoRequest.getNome());
+    entity.setIdade(alunoRequest.getIdade());
+    entity.setRa(alunoRequest.getRa());
+
+    Aluno salvo = alunoRepository.save(entity);
+
+    return new AlunoResponse(salvo.getId(), salvo.getNome(), salvo.getIdade(), salvo.getRa());
+}
  
    public AlunoResponse findBy(Long id) {
     Optional<Aluno> opt = alunoRepository.findById(id);
@@ -36,23 +41,36 @@ public class AlunoService {
     }
 }
  
-    public AlunoResponse findByRa(String ra){
-        Aluno aluno = alunoRepository
-                .findByRa(ra)
-                .orElseThrow(() -> new RuntimeException("RA NOT FOUND"));
+    public AlunoResponse findByRa(String ra) {
+    Optional<Aluno> opt = alunoRepository.findByRa(ra);
+    if (opt.isPresent()) {
+        Aluno aluno = opt.get();
         return new AlunoResponse(aluno.getId(), aluno.getNome(), aluno.getIdade(), aluno.getRa());
+    } else {
+        return null;
     }
+}
  
-    public void update(Long id, AlunoRequest alunoRequest){
-        Aluno entity = alunoRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("ID NOT FOUND"));
- 
-        BeanUtils.copyProperties(alunoRequest, entity);
+    public boolean update(Long id, AlunoRequest alunoRequest) {
+    Optional<Aluno> opt = alunoRepository.findById(id);
+    if (opt.isPresent()) {
+        Aluno entity = opt.get();
+        entity.setNome(alunoRequest.getNome());
+        entity.setIdade(alunoRequest.getIdade());
+        entity.setRa(alunoRequest.getRa());
         alunoRepository.save(entity);
+        return true;
+    } else {
+        return false;
     }
+}
  
-    public void deleteById(Long id){
+    public boolean deleteById(Long id) {
+    if (alunoRepository.existsById(id)) {
         alunoRepository.deleteById(id);
+        return true;
+    } else {
+        return false;
+        }
     }
 }

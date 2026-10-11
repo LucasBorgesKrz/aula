@@ -6,6 +6,7 @@ import br.com.techx.aula.model.Aluno;
 import br.com.techx.aula.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
  
 import java.util.List;
  
@@ -33,26 +34,41 @@ public ResponseEntity<AlunoResponse> getById(@PathVariable Long id) {
 }
  
     // @RequestParam -> pega o valor da query string, ex: /aluno/buscar?ra=022116
-    @GetMapping("/buscar")
-    public AlunoResponse getByRa(@RequestParam String ra){
-        return alunoService.findByRa(ra);
+   @GetMapping("/buscar")
+public ResponseEntity<AlunoResponse> getByRa(@RequestParam String ra) {
+    AlunoResponse response = alunoService.findByRa(ra);
+    if (response != null) {
+        return ResponseEntity.ok(response);
+    } else {
+        return ResponseEntity.notFound().build();
     }
+}
  
     @PostMapping
-    public void create(@RequestBody AlunoRequest alunoRequest){
-        alunoService.create(alunoRequest);
+    public ResponseEntity<AlunoResponse> create(@RequestBody AlunoRequest alunoRequest) {
+    AlunoResponse response = alunoService.create(alunoRequest);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
  
-    @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody AlunoRequest alunoRequest){
-        alunoService.update(id, alunoRequest);
+   @PutMapping("/{id}")
+public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody AlunoRequest alunoRequest) {
+    boolean atualizou = alunoService.update(id, alunoRequest);
+    if (atualizou) {
+        return ResponseEntity.noContent().build();
+    } else {
+        return ResponseEntity.notFound().build();
     }
+}
  
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        alunoService.deleteById(id);
+public ResponseEntity<Void> delete(@PathVariable Long id) {
+    boolean apagou = alunoService.deleteById(id);
+    if (apagou) {
+        return ResponseEntity.noContent().build();
+    } else {
+        return ResponseEntity.notFound().build();
     }
- 
+}
     // Desafio prático
     @GetMapping("/desafio")
     public String desafio(){
