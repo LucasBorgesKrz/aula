@@ -52,22 +52,14 @@ public ResponseEntity<AlunoResponse> getByRa(@RequestParam String ra) {
  
    @PutMapping("/{id}")
 public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody AlunoRequest alunoRequest) {
-    boolean atualizou = alunoService.update(id, alunoRequest);
-    if (atualizou) {
-        return ResponseEntity.noContent().build();
-    } else {
-        return ResponseEntity.notFound().build();
-    }
+    alunoService.update(id, alunoRequest);
+    return ResponseEntity.noContent().build();
 }
- 
-    @DeleteMapping("/{id}")
+
+@DeleteMapping("/{id}")
 public ResponseEntity<Void> delete(@PathVariable Long id) {
-    boolean apagou = alunoService.deleteById(id);
-    if (apagou) {
-        return ResponseEntity.noContent().build();
-    } else {
-        return ResponseEntity.notFound().build();
-    }
+    alunoService.deleteById(id);
+    return ResponseEntity.noContent().build();
 }
     // Desafio prático
     @GetMapping("/desafio")
