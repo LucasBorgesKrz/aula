@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlunoRequest {
+public class AlunoResponse {
+    private Long id;
     private String nome;
     private int idade;
     private String ra;
