@@ -51,26 +51,24 @@ public class AlunoService {
     }
 }
  
-    public boolean update(Long id, AlunoRequest alunoRequest) {
-    Optional<Aluno> opt = alunoRepository.findById(id);
-    if (opt.isPresent()) {
-        Aluno entity = opt.get();
-        entity.setNome(alunoRequest.getNome());
-        entity.setIdade(alunoRequest.getIdade());
-        entity.setRa(alunoRequest.getRa());
-        alunoRepository.save(entity);
-        return true;
-    } else {
-        return false;
-    }
+   public void update(Long id, AlunoRequest alunoRequest) {
+    Aluno entity = alunoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+    entity.setNome(alunoRequest.getNome());
+    entity.setIdade(alunoRequest.getIdade());
+    entity.setRa(alunoRequest.getRa());
+
+    alunoRepository.save(entity);
 }
- 
-    public boolean deleteById(Long id) {
-    if (alunoRepository.existsById(id)) {
-        alunoRepository.deleteById(id);
-        return true;
-    } else {
-        return false;
-        }
+
+public void deleteById(Long id) {
+    boolean exists = alunoRepository.existsById(id);
+
+    if (!exists) {
+        throw new RuntimeException("Aluno não encontrado");
+    }
+
+    alunoRepository.deleteById(id);
     }
 }
